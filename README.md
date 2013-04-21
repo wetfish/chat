@@ -1,4 +1,4 @@
-Who's there?
+Wetfish chat!
 =====
 
-A super simple node + express + socket.io app to count the number of users currently connected to a page.
+A super simple node + express + socket.io app to have nice chats with your buddies
