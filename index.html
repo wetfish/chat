@@ -1,0 +1,23 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/jquery-1.9.1.min.js"></script>
+
+<script>
+    var socket = io.connect('http://chat.wetfish.net');
+   
+    socket.on('connected', function(data)
+    {
+        socket.emit('connected');
+    });
+    
+    socket.on('count', function(data)
+    {
+        if(data.users == 1)
+            $('h1').html(data.users+' user connected');
+        else
+            $('h1').html(data.users+' users connected');
+    });
+</script>
+
+<body>
+    <h1>Loading...</h1>
+</body>

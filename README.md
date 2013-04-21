@@ -1,4 +1,4 @@
-chat
-====
+Who's there?
+=====
 
-Let's have some chats
+A super simple node + express + socket.io app to count the number of users currently connected to a page.
