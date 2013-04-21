@@ -43,8 +43,8 @@
             
             socket.on('chat', function(chat)
             {
-                $('.chat').append("<div><b>"+chat.user+"</b>: "+chat.message.linkify()+"</div>");
-                $('.chat').scrollTop($('.chat')[0].scrollHeight);
+                $('.chat').append("<div><b>"+chat.user+"</b>: "+chat.message.fishformat()+"</div>");
+                setTimeout(function() { $('.chat').scrollTop($('.chat')[0].scrollHeight) }, 100);
             });
             
             $(document).ready(function()
@@ -54,14 +54,14 @@
                 $(window).resize(function()
                 {
                     $('.chat').css('max-height', $('body').height() - 150);
-                    $('.chat').animate('scrollTop', $('.chat')[0].scrollHeight);
+                    $('.chat').scrollTop($('.chat')[0].scrollHeight);
                 });
                 
                 $('body').on('click', '.chat a', function()
                 {
                     $(this).attr('target', '_blank');
                 });
-                
+                                
                 $('.input').keypress(function(event)
                 {
                     if(event.which == 13)
