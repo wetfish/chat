@@ -1,12 +1,21 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/jquery-1.9.1.min.js"></script>
+<link rel="stylesheet" href="/css/chat.css" type="text/css" />
 
 <script>
-    var socket = io.connect('http://chat.wetfish.net');
+    var socket = io.connect('http://chat.wetfish.net:1026');
    
     socket.on('connected', function(data)
     {
-        socket.emit('connected');
+        $('.status').html('Awaiting input');
+        var name = prompt('Welcome friend! What is your name?');
+
+        // Usernames are optional, creeper
+        if(name)
+        {
+            $('.status').html('Awaiting response');
+            socket.emit('name', {name: name});
+        }
     });
     
     socket.on('count', function(data)
@@ -16,8 +25,23 @@
         else
             $('h1').html(data.users+' users connected');
     });
+    
+    socket.on('users', function(data)
+    {
+        $('.status').html('Connected');
+        $('.users').html(data.users.join(' '));
+    });
 </script>
 
 <body>
     <h1>Loading...</h1>
+    <div class='users'></div>
+    <hr />
+
+    <div class='chat'></div>
+    
+    <div class='footer'>
+        <div class='status'></div>
+        <input class='input'> <input type='button' value='Say'>
+    </div>
 </body>
