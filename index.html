@@ -23,10 +23,10 @@
             
             socket.on('count', function(data)
             {
-                if(data.users == 1)
-                    $('h1').html(data.users+' user connected');
+                if(data.count == 1)
+                    $('h1').html(data.count+' user connected');
                 else
-                    $('h1').html(data.users+' users connected');
+                    $('h1').html(data.count+' users connected');
             });
             
             socket.on('users', function(users)

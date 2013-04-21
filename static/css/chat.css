@@ -3,6 +3,7 @@ h1 {
 }
 
 .chat {
+    overfloy-x: hidden;
     overflow-y: scroll;
 }
 

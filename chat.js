@@ -44,7 +44,7 @@ io.sockets.on('connection', function(socket)
     socket.emit('connected');
     
     count++;
-    io.sockets.emit('count', {users: count});
+    io.sockets.emit('count', {count: count});
 
     socket.on('name', function(data)
     {
