@@ -1,9 +1,11 @@
-var express = require('express')
-  , app     = require('express')()
-  , server  = require('http').createServer(app)
-  , io      = require('socket.io').listen(server)
-  , count   = 0
-  , users   = [];
+var express     = require('express')
+  , app         = require('express')()
+  , server      = require('http').createServer(app)
+  , io          = require('socket.io').listen(server)
+  , check       = require('validator').check
+  , sanitize    = require('validator').sanitize
+  , count       = 0
+  , users       = [];
 
 function getDate()
 {
@@ -48,10 +50,26 @@ io.sockets.on('connection', function(socket)
 
     socket.on('name', function(data)
     {
-        user.name = data.name;
-        users.push(data.name);
+        var success = true;
         
-        io.sockets.emit('users', {list: users});
+        try
+        {
+            check(data.name).len(1, 16).isAlphanumeric();
+        }
+        catch(e)
+        {
+            success = false;
+            socket.emit('error', {message: 'Your name must be alphanumeric and no longer than 16 characters!'});
+            socket.emit('connected');
+        }
+        
+        if(success)
+        {
+            user.name = data.name;
+            users.push(data.name);
+            
+            io.sockets.emit('users', {list: users});
+        }
     });
     
     socket.on('chat', function(chat)
@@ -60,7 +78,8 @@ io.sockets.on('connection', function(socket)
         if(isset(chat.message) && chat.message
             && isset(user.name) && user.name)
         {
-            io.sockets.emit('chat', {user: user.name, message: chat.message});
+            var message = sanitize(chat.message).xss();
+            io.sockets.emit('chat', {user: user.name, message: message});
         }
     });
 

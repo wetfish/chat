@@ -21,6 +21,11 @@
                 }
             });
             
+            socket.on('error', function(data)
+            {
+                alert('You done messed up: \n'+data.message)
+            });
+            
             socket.on('count', function(data)
             {
                 if(data.count == 1)
