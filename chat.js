@@ -51,7 +51,17 @@ io.sockets.on('connection', function(socket)
         user.name = data.name;
         users.push(data.name);
         
-        io.sockets.emit('users', {users: users});
+        io.sockets.emit('users', {list: users});
+    });
+    
+    socket.on('chat', function(chat)
+    {
+        // Can't chat if you don't have a name!
+        if(isset(chat.message) && chat.message
+            && isset(user.name) && user.name)
+        {
+            io.sockets.emit('chat', {user: user.name, message: chat.message});
+        }
     });
 
     socket.on('disconnect', function()

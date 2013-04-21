@@ -1,47 +1,81 @@
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/jquery-1.9.1.min.js"></script>
-<link rel="stylesheet" href="/css/chat.css" type="text/css" />
+<html>
+    <head>
+        <title>Fish Chat!</title>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/jquery-1.9.1.min.js"></script>
+        <link rel="stylesheet" href="/css/chat.css" type="text/css" />
 
-<script>
-    var socket = io.connect('http://chat.wetfish.net:1026');
-   
-    socket.on('connected', function(data)
-    {
-        $('.status').html('Awaiting input');
-        var name = prompt('Welcome friend! What is your name?');
+        <script>
+            var socket = io.connect('http://chat.wetfish.net:1026');
+           
+            socket.on('connected', function(data)
+            {
+                $('.status').html('Awaiting input');
+                var name = prompt('Welcome friend! What is your name?');
 
-        // Usernames are optional, creeper
-        if(name)
-        {
-            $('.status').html('Awaiting response');
-            socket.emit('name', {name: name});
-        }
-    });
+                // Usernames are optional, creeper
+                if(name)
+                {
+                    $('.status').html('Awaiting response');
+                    socket.emit('name', {name: name});
+                }
+            });
+            
+            socket.on('count', function(data)
+            {
+                if(data.users == 1)
+                    $('h1').html(data.users+' user connected');
+                else
+                    $('h1').html(data.users+' users connected');
+            });
+            
+            socket.on('users', function(users)
+            {
+                $('.status').html('Connected');
+                $('.users').html(users.list.join(' '));
+            });
+            
+            socket.on('chat', function(chat)
+            {
+                $('.chat').append("<div><b>"+chat.user+"</b>: "+chat.message+"</div>");
+                $('.chat').scrollTop($('.chat')[0].scrollHeight);
+            });
+            
+            $(document).ready(function()
+            {
+                $('.chat').css('max-height', $('body').height() - 150);
+
+                $(window).resize(function()
+                {
+                    $('.chat').css('max-height', $('body').height() - 150);
+                    $('.chat').animate('scrollTop', $('.chat')[0].scrollHeight);
+                });
+                
+                $('.input').keypress(function(event)
+                {
+                    if(event.which == 13)
+                        $('.message').trigger('click');
+                });
+                
+                $('.message').click(function()
+                {
+                    socket.emit('chat', {message: $('.input').val()});
+                    $('.input').val('');
+                });
+            });
+        </script>
+    </head>
     
-    socket.on('count', function(data)
-    {
-        if(data.users == 1)
-            $('h1').html(data.users+' user connected');
-        else
-            $('h1').html(data.users+' users connected');
-    });
-    
-    socket.on('users', function(data)
-    {
-        $('.status').html('Connected');
-        $('.users').html(data.users.join(' '));
-    });
-</script>
+    <body>
+        <h1>Loading...</h1>
+        <div class='users'></div>
+        <hr />
 
-<body>
-    <h1>Loading...</h1>
-    <div class='users'></div>
-    <hr />
-
-    <div class='chat'></div>
-    
-    <div class='footer'>
-        <div class='status'></div>
-        <input class='input'> <input type='button' value='Say'>
-    </div>
-</body>
+        <div class='chat'></div>
+        
+        <div class='footer'>
+            <div class='status'></div>
+            <input class='input'> <input type='button' class='message' value='Say'>
+        </div>
+    </body>
+</html>
