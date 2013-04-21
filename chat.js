@@ -78,7 +78,7 @@ io.sockets.on('connection', function(socket)
         if(isset(chat.message) && chat.message
             && isset(user.name) && user.name)
         {
-            var message = sanitize(chat.message).xss();
+            var message = sanitize(chat.message).entityEncode();
             io.sockets.emit('chat', {user: user.name, message: message});
         }
     });

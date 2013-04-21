@@ -3,6 +3,7 @@
         <title>Fish Chat!</title>
         <script src="/socket.io/socket.io.js"></script>
         <script src="/js/jquery-1.9.1.min.js"></script>
+        <script src="/js/util.js"></script>
         <link rel="stylesheet" href="/css/chat.css" type="text/css" />
 
         <script>
@@ -42,7 +43,7 @@
             
             socket.on('chat', function(chat)
             {
-                $('.chat').append("<div><b>"+chat.user+"</b>: "+chat.message+"</div>");
+                $('.chat').append("<div><b>"+chat.user+"</b>: "+chat.message.linkify()+"</div>");
                 $('.chat').scrollTop($('.chat')[0].scrollHeight);
             });
             
@@ -54,6 +55,11 @@
                 {
                     $('.chat').css('max-height', $('body').height() - 150);
                     $('.chat').animate('scrollTop', $('.chat')[0].scrollHeight);
+                });
+                
+                $('body').on('click', '.chat a', function()
+                {
+                    $(this).attr('target', '_blank');
                 });
                 
                 $('.input').keypress(function(event)
