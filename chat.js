@@ -94,10 +94,10 @@ io.sockets.on('connection', function(socket)
             var index = users.indexOf(user.name);
             
             if(index != -1)
-                delete users[index];
+                users.splice(index, 1);
         }
         
         io.sockets.emit('count', {count: count});
-        io.sockets.emit('users', {users: users});
+        io.sockets.emit('users', {list: users});
     });
 });
